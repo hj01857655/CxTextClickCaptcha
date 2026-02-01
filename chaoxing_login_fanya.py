@@ -1,94 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-超星泛雅账号登录 - 包含验证码处理（需要手动输入坐标）
+超星泛雅账号登录（普通账号密码登录）
 
 注意：
 1. 本脚本用于普通账号登录（fanyalogin 接口）
-2. 验证码是点击式验证码，需要人工识别文字位置并输入坐标
-3. 不是全自动破解，而是半自动化流程
+2. 不需要验证码（或验证码可选）
+3. 直接用户名密码登录
 """
 
 import sys
 import requests
 from chaoxing_encrypt import encrypt_by_aes
-from captcha_handler import ChaoxingCaptchaHandler
 
-def get_captcha_validate():
+def login_fanya(username, password):
     """
-    获取验证码 validate（需要手动输入坐标）
-    
-    流程：
-    1. 自动获取验证码图片
-    2. 生成带网格的辅助图片
-    3. 人工识别文字位置
-    4. 手动输入坐标
-    5. 自动提交验证
-    """
-    cracker = ChaoxingCaptchaHandler()
-    
-    print("\n" + "🎯" * 35)
-    print("超星验证码处理（需要手动输入坐标）")
-    print("🎯" * 35 + "\n")
-    
-    # 步骤 1-4：获取验证码
-    server_time = cracker.step1_get_server_time()
-    if not server_time:
-        return None
-    
-    captcha_key, token = cracker.step2_generate_params(server_time)
-    new_token, image_url, context = cracker.step3_get_captcha_image(captcha_key, token)
-    if not new_token:
-        return None
-    
-    image_path = cracker.step4_download_image(image_url)
-    if not image_path:
-        return None
-    
-    print(f"\n✅ 验证码已下载: {image_path}")
-    print(f"需要点击的文字: {context}")
-    
-    # 生成带网格的图片
-    print("\n生成带网格的图片...")
-    import subprocess
-    result = subprocess.run(
-        ['python', 'show_captcha_with_grid.py', image_path],
-        capture_output=True,
-        text=True
-    )
-    print(result.stdout)
-    
-    # 手动输入坐标
-    print("\n" + "=" * 70)
-    print("请查看带网格的图片，然后输入坐标")
-    print("格式：x1,y1;x2,y2;x3,y3")
-    print("=" * 70)
-    
-    coords_input = input("\n请输入坐标: ").strip()
-    
-    if not coords_input:
-        print("❌ 未输入坐标")
-        return None
-    
-    # 解析坐标
-    click_points = []
-    for coord in coords_input.split(';'):
-        coord = coord.strip()
-        if not coord:
-            continue
-        x, y = map(int, coord.split(','))
-        click_points.append({"x": x, "y": y})
-    
-    print(f"\n使用坐标: {click_points}")
-    
-    # 提交验证
-    validate = cracker.step5_verify_captcha(new_token, click_points)
-    
-    return validate
-
-def login_with_captcha(username, password):
-    """
-    泛雅账号完整登录流程
+    泛雅账号登录
     
     Args:
         username: 账号（手机号/邮箱/用户名）
@@ -99,33 +26,20 @@ def login_with_captcha(username, password):
             - success: bool, 是否成功
             - session: requests.Session, 会话对象
             - cookies: dict, Cookie 字典
-            - validate: str, 验证码 validate
-            - uid: str, 用户 ID（如果有）
     """
     print("\n" + "=" * 70)
     print("超星泛雅账号登录")
     print("=" * 70)
     
-    # 步骤 1：处理验证码（需要手动输入坐标）
-    print("\n步骤 1: 处理验证码（需要手动输入坐标）...")
-    validate = get_captcha_validate()
-    
-    if not validate:
-        print("❌ 验证码处理失败")
-        return None
-    
-    print(f"\n✅ 验证码处理成功")
-    print(f"Validate: {validate}")
-    
-    # 步骤 2：加密用户名和密码
-    print("\n步骤 2: 加密用户名和密码...")
+    # 步骤 1：加密用户名和密码
+    print("\n步骤 1: 加密用户名和密码...")
     encrypted_uname = encrypt_by_aes(username)
     encrypted_pwd = encrypt_by_aes(password)
     print(f"✅ 用户名已加密")
     print(f"✅ 密码已加密")
     
-    # 步骤 3：登录（泛雅登录）
-    print("\n步骤 3: 提交登录（泛雅账号）...")
+    # 步骤 2：登录（泛雅登录）
+    print("\n步骤 2: 提交登录...")
     
     login_url = "https://passport2.chaoxing.com/fanyalogin"
     
@@ -136,7 +50,7 @@ def login_with_captcha(username, password):
         "refer": "https://i.chaoxing.com",
         "t": "true",
         "forbidotherlogin": "0",
-        "validate": validate,
+        "validate": "",
         "doubleFactorLogin": "0",
         "independentId": "0",
         "independentNameId": "0"
@@ -173,15 +87,13 @@ def login_with_captcha(username, password):
         return {
             "success": True,
             "session": session,
-            "cookies": cookies,
-            "validate": validate
+            "cookies": cookies
         }
     else:
         print(f"\n❌ 登录失败: {result.get('msg2', result.get('mes', '未知错误'))}")
         return {
             "success": False,
-            "response": resp.text,
-            "validate": validate
+            "response": resp.text
         }
 
 if __name__ == '__main__':
@@ -203,7 +115,7 @@ if __name__ == '__main__':
     
     print(f"\n用户名: {USERNAME}")
     
-    result = login_with_captcha(USERNAME, PASSWORD)
+    result = login_fanya(USERNAME, PASSWORD)
     
     print("\n" + "=" * 70)
     if result and result.get("success"):
