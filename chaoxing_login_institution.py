@@ -265,8 +265,8 @@ if __name__ == '__main__':
         PASSWORD = sys.argv[2]
         FID = sys.argv[3]
     else:
-        print("用法: python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>")
-        print("示例: python chaoxing_login_with_captcha.py your_username your_password 2207")
+        print("用法: python chaoxing_login_institution.py <用户名> <密码> <机构ID>")
+        print("示例: python chaoxing_login_institution.py your_username your_password 1234")
         print("\n说明：")
         print("  - 用户名：机构账号用户名")
         print("  - 密码：账号密码")

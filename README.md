@@ -81,7 +81,7 @@ python chaoxing_login_institution.py <用户名> <密码> <机构ID>
 
 **示例**：
 ```bash
-python chaoxing_login_institution.py your_username your_password 2207
+python chaoxing_login_institution.py your_username your_password 1234
 ```
 
 **流程**：
@@ -214,10 +214,10 @@ x1,y1;x2,y2;x3,y3
 
 **示例**：
 ```
-https://passport2.chaoxing.com/login?fid=2207
+https://passport2.chaoxing.com/login?fid=1234
 ```
 
-机构 ID 为 `2207`
+机构 ID 为 `1234`
 
 ## 🛠️ 技术栈
 
@@ -250,7 +250,7 @@ cd CxTextClickCaptcha
 pip install requests pycryptodome pillow
 
 # 3. 机构账号登录（需要验证码）
-python chaoxing_login_institution.py your_username your_password 2207
+python chaoxing_login_institution.py your_username your_password 1234
 
 # 4. 泛雅账号登录（无需验证码）
 python chaoxing_login_fanya.py your_phone your_password
