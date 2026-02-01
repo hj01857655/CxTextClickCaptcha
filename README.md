@@ -76,12 +76,12 @@ pip install requests pycryptodome pillow
 ### 1. 机构账号登录（需要验证码）
 
 ```bash
-python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>
+python chaoxing_login_institution.py <用户名> <密码> <机构ID>
 ```
 
 **示例**：
 ```bash
-python chaoxing_login_with_captcha.py your_username your_password 2207
+python chaoxing_login_institution.py your_username your_password 2207
 ```
 
 **流程**：
@@ -125,7 +125,7 @@ python show_captcha_with_grid.py <图片路径>
 
 ```
 .
-├── chaoxing_login_with_captcha.py  # 机构账号登录（需要验证码）
+├── chaoxing_login_institution.py   # 机构账号登录（需要验证码）
 ├── chaoxing_login_fanya.py         # 泛雅账号登录（无需验证码）
 ├── captcha_handler.py              # 验证码处理核心
 ├── chaoxing_encrypt.py             # AES 加密实现
@@ -137,7 +137,7 @@ python show_captcha_with_grid.py <图片路径>
 
 ## 🎯 核心文件说明
 
-### chaoxing_login_with_captcha.py
+### chaoxing_login_institution.py
 
 机构账号登录流程（需要验证码），包括：
 - 验证码处理（需要手动输入坐标）
@@ -243,14 +243,14 @@ MIT License
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/hj01857655/CxTextCaptcha.git
-cd CxTextCaptcha
+git clone https://github.com/hj01857655/CxTextClickCaptcha.git
+cd CxTextClickCaptcha
 
 # 2. 安装依赖
 pip install requests pycryptodome pillow
 
 # 3. 机构账号登录（需要验证码）
-python chaoxing_login_with_captcha.py your_username your_password 2207
+python chaoxing_login_institution.py your_username your_password 2207
 
 # 4. 泛雅账号登录（无需验证码）
 python chaoxing_login_fanya.py your_phone your_password
