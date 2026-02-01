@@ -64,7 +64,7 @@ pip install requests pycryptodome pillow
 
 ## 🚀 使用方法
 
-### 1. 完整登录流程
+### 1. 机构账号登录
 
 ```bash
 python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>
@@ -73,6 +73,17 @@ python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>
 **示例**：
 ```bash
 python chaoxing_login_with_captcha.py your_username your_password 2207
+```
+
+### 2. 泛雅账号登录（普通登录）
+
+```bash
+python chaoxing_login_fanya.py <用户名> <密码>
+```
+
+**示例**：
+```bash
+python chaoxing_login_fanya.py your_phone your_password
 ```
 
 **流程**：
@@ -100,7 +111,8 @@ python show_captcha_with_grid.py <图片路径>
 
 ```
 .
-├── chaoxing_login_with_captcha.py  # 完整登录流程（主脚本）
+├── chaoxing_login_with_captcha.py  # 机构账号登录（主脚本）
+├── chaoxing_login_fanya.py         # 泛雅账号登录（普通登录）
 ├── captcha_handler.py              # 验证码处理核心
 ├── chaoxing_encrypt.py             # AES 加密实现
 ├── show_captcha_with_grid.py       # 坐标辅助工具
@@ -113,11 +125,19 @@ python show_captcha_with_grid.py <图片路径>
 
 ### chaoxing_login_with_captcha.py
 
-完整的登录流程，包括：
+机构账号登录流程，包括：
 - 验证码处理（需要手动输入坐标）
 - 用户名和密码加密
 - 登录请求提交
 - 密码重置处理
+- Session 管理
+
+### chaoxing_login_fanya.py
+
+泛雅账号登录流程（普通登录），包括：
+- 验证码处理（需要手动输入坐标）
+- 用户名和密码加密
+- 泛雅登录请求提交
 - Session 管理
 
 ### captcha_handler.py
