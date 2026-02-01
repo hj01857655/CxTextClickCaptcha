@@ -27,6 +27,7 @@ Thumbs.db
 # 日志
 *.log
 
-# 测试文件
-test_*.py
-*_test.py
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
