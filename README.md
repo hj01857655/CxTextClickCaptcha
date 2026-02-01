@@ -17,6 +17,7 @@
 - ✅ AES 加密实现（用户名和密码）
 - ✅ 完整的登录流程（包括密码重置处理）
 - ✅ 机构账号登录支持
+- ✅ 泛雅账号登录支持（普通账号密码登录，无需验证码）
 
 ## 🔧 技术细节
 
@@ -40,11 +41,19 @@
 
 ### 登录流程
 
+#### 机构账号登录（需要验证码）
+
 1. 处理验证码（需要手动输入坐标）
 2. 加密用户名和密码
-3. 提交登录请求（`/unitlogin` 用于机构账号）
+3. 提交登录请求（`/unitlogin` 接口）
 4. 处理密码重置（如果需要）
 5. 获取 Session 和 Cookies
+
+#### 泛雅账号登录（无需验证码）
+
+1. 加密用户名和密码
+2. 提交登录请求（`/fanyalogin` 接口，validate 参数为空）
+3. 获取 Session 和 Cookies
 
 ## 📦 依赖安装
 
@@ -64,7 +73,7 @@ pip install requests pycryptodome pillow
 
 ## 🚀 使用方法
 
-### 1. 机构账号登录
+### 1. 机构账号登录（需要验证码）
 
 ```bash
 python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>
@@ -75,7 +84,14 @@ python chaoxing_login_with_captcha.py <用户名> <密码> <机构ID>
 python chaoxing_login_with_captcha.py your_username your_password 2207
 ```
 
-### 2. 泛雅账号登录（普通登录）
+**流程**：
+1. 自动获取验证码图片
+2. 生成带网格的辅助图片（保存在 `captcha/` 目录）
+3. 查看图片，识别需要点击的文字
+4. 输入坐标（格式：`x1,y1;x2,y2;x3,y3`）
+5. 自动完成后续登录流程
+
+### 2. 泛雅账号登录（无需验证码）
 
 ```bash
 python chaoxing_login_fanya.py <用户名> <密码>
@@ -86,20 +102,18 @@ python chaoxing_login_fanya.py <用户名> <密码>
 python chaoxing_login_fanya.py your_phone your_password
 ```
 
-**流程**：
-1. 自动获取验证码图片
-2. 生成带网格的辅助图片（保存在 `captcha/` 目录）
-3. 查看图片，识别需要点击的文字
-4. 输入坐标（格式：`x1,y1;x2,y2;x3,y3`）
-5. 自动完成后续登录流程
+**说明**：
+- 用户名：手机号/邮箱/用户名
+- 密码：账号密码
+- 无需验证码，直接登录
 
-### 2. 单独处理验证码
+### 3. 单独处理验证码
 
 ```bash
 python captcha_handler.py
 ```
 
-### 3. 坐标辅助工具
+### 4. 坐标辅助工具
 
 ```bash
 python show_captcha_with_grid.py <图片路径>
@@ -111,8 +125,8 @@ python show_captcha_with_grid.py <图片路径>
 
 ```
 .
-├── chaoxing_login_with_captcha.py  # 机构账号登录（主脚本）
-├── chaoxing_login_fanya.py         # 泛雅账号登录（普通登录）
+├── chaoxing_login_with_captcha.py  # 机构账号登录（需要验证码）
+├── chaoxing_login_fanya.py         # 泛雅账号登录（无需验证码）
 ├── captcha_handler.py              # 验证码处理核心
 ├── chaoxing_encrypt.py             # AES 加密实现
 ├── show_captcha_with_grid.py       # 坐标辅助工具
@@ -125,19 +139,18 @@ python show_captcha_with_grid.py <图片路径>
 
 ### chaoxing_login_with_captcha.py
 
-机构账号登录流程，包括：
+机构账号登录流程（需要验证码），包括：
 - 验证码处理（需要手动输入坐标）
 - 用户名和密码加密
-- 登录请求提交
+- 登录请求提交（`/unitlogin` 接口）
 - 密码重置处理
 - Session 管理
 
 ### chaoxing_login_fanya.py
 
-泛雅账号登录流程（普通登录），包括：
-- 验证码处理（需要手动输入坐标）
+泛雅账号登录流程（无需验证码），包括：
 - 用户名和密码加密
-- 泛雅登录请求提交
+- 泛雅登录请求提交（`/fanyalogin` 接口）
 - Session 管理
 
 ### captcha_handler.py
@@ -186,11 +199,12 @@ x1,y1;x2,y2;x3,y3
 
 ## ⚠️ 注意事项
 
-1. **不是全自动破解**：需要人工识别文字位置并输入坐标
+1. **不是全自动破解**：机构账号登录需要人工识别文字位置并输入坐标
 2. **仅供学习研究**：请勿用于非法用途
 3. **账号安全**：不要在公共场合使用真实账号测试
 4. **验证码有效期**：token 有效期 5 分钟，请及时输入坐标
 5. **机构 ID**：不同学校的机构 ID 不同，需要自行查找
+6. **泛雅登录**：普通账号密码登录无需验证码
 
 ## 🔍 如何获取机构 ID
 
@@ -235,17 +249,22 @@ cd CxTextCaptcha
 # 2. 安装依赖
 pip install requests pycryptodome pillow
 
-# 3. 运行测试
+# 3. 机构账号登录（需要验证码）
 python chaoxing_login_with_captcha.py your_username your_password 2207
 
-# 4. 查看验证码图片
+# 4. 泛雅账号登录（无需验证码）
+python chaoxing_login_fanya.py your_phone your_password
+
+# 5. 查看验证码图片（机构登录）
 # 图片保存在 captcha/ 目录
 
-# 5. 输入坐标
+# 6. 输入坐标（机构登录）
 # 格式：x1,y1;x2,y2;x3,y3
 ```
 
 ## 🎉 成功示例
+
+### 机构账号登录
 
 ```
 ✅ 验证码处理成功
@@ -257,6 +276,17 @@ Validate: validate_GcXX5vewqE7DezKGlyvleKCnkTglvGpL_...
 ✅ 成功跳过密码重置！
 
 🎉 完整登录流程成功！
+```
+
+### 泛雅账号登录
+
+```
+✅ 用户名已加密
+✅ 密码已加密
+
+✅ 登录成功！
+
+🎉 登录成功！
 ```
 
 ## 📞 联系方式
